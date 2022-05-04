@@ -1,7 +1,6 @@
 import requests
 from pathlib import Path
 import pandas as pd
-from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
 
@@ -10,7 +9,7 @@ def get_rate(url):
     try:
         html = requests.get(url, stream=True)
         data = html.json()
-        return data['s_overall']
+        return data
     except requests.exceptions.RequestException as e:
         return "-1"
 
@@ -39,6 +38,6 @@ for f in files:
     url_list = []
     for product in df[0]:
         url_list.append(f'https://reviewmeta.com/api/amazon/{product}')
-    with open(f"{f}.json", "w") as outfile:
+    with open(f"results/{f.stem}.json", "w") as outfile:
         json.dump(runner(url_list), outfile)
-
+    print(f"Done with {f.stem}")
